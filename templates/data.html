@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2>All Historical Data</h2>
+</div>
+
+<div class="glass-panel">
+    {% if entries %}
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Food Item</th>
+                        <th>Category</th>
+                        <th>Calories</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.timestamp.strftime('%Y-%m-%d') }}</td>
+                        <td style="color: var(--text-muted);">{{ entry.timestamp.strftime('%H:%M') }}</td>
+                        <td style="font-weight: 500;">{{ entry.food_name }}</td>
+                        <td><span class="badge">{{ entry.category }}</span></td>
+                        <td>{{ entry.calories }} kcal</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem 0; color: var(--text-muted);">
+            <p>No historical data found. Your logged meals will appear here.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

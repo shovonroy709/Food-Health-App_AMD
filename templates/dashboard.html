@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h2>Hello, {{ user.name.split(' ')[0] }}!</h2>
+    <p style="color: var(--text-muted);">Today is {{ now }}</p>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="glass-panel stat-card">
+        <div class="stat-label">Calories Consumed</div>
+        <div class="stat-value">{{ total_calories }}</div>
+        <div class="stat-label" style="text-transform: none;">kcal</div>
+    </div>
+    <div class="glass-panel stat-card">
+        <div class="stat-label">Daily Goal</div>
+        <div class="stat-value" style="color: #3b82f6;">{{ calorie_goal }}</div>
+        <div class="stat-label" style="text-transform: none;">kcal</div>
+    </div>
+    <div class="glass-panel stat-card">
+        <div class="stat-label">Remaining</div>
+        {% set remaining = calorie_goal - total_calories %}
+        <div class="stat-value" style="color: {% if remaining < 0 %}#ef4444{% else %}var(--primary){% endif %};">
+            {{ remaining }}
+        </div>
+        <div class="stat-label" style="text-transform: none;">kcal</div>
+    </div>
+</div>
+
+<div class="flex gap-4" style="flex-wrap: wrap;">
+    <!-- Add Food Form -->
+    <div class="glass-panel" style="flex: 1; min-width: 300px;">
+        <h3 class="mb-4">Log a Meal</h3>
+        <form id="add-food-form">
+            <div class="form-group">
+                <label for="food_name">Food Item</label>
+                <input type="text" id="food_name" class="form-control" placeholder="e.g. Grilled Chicken Salad" required>
+            </div>
+            <div class="flex gap-4">
+                <div class="form-group" style="flex: 1;">
+                    <label for="calories">Calories</label>
+                    <input type="number" id="calories" class="form-control" placeholder="kcal" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="category">Category</label>
+                    <select id="category" class="form-control" required>
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snack">Snack</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Add Food</button>
+        </form>
+    </div>
+
+    <!-- Today's Log -->
+    <div class="glass-panel" style="flex: 2; min-width: 400px;">
+        <h3 class="mb-4">Today's Log</h3>
+        {% if entries %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Food</th>
+                        <th>Category</th>
+                        <th>Calories</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ entry.food_name }}</td>
+                        <td><span class="badge">{{ entry.category }}</span></td>
+                        <td>{{ entry.calories }} kcal</td>
+                        <td style="color: var(--text-muted); font-size: 0.9rem;">{{ entry.timestamp.strftime('%H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div style="text-align: center; padding: 3rem 0; color: var(--text-muted);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.5;">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <p>No food logged today yet. Start logging!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
